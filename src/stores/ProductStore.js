@@ -1,5 +1,6 @@
 import { action, makeObservable, observable } from 'mobx'
 
+/* REDUX */
 class ProductStore {
     products = [];
     selectedProduct = {};

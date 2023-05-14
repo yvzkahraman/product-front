@@ -1,31 +1,35 @@
 import { useNavigate, useParams } from "react-router-dom";
-// import { observer } from "mobx-react";
+import { observer } from "mobx-react";
 import productService from "./services/ProductService";
-// import { productStore } from "./stores/ProductStore";
-import { connect } from "react-redux";
+import { productStore } from "./stores/ProductStore";
 import { Formik, Form, Field } from 'formik';
 import ProductUpdateSchema from "./ProductUpdateSchema";
 
-const ProductUpdate = ({ selectedProduct }) => {
+const ProductCreate = observer(() => {
     let params = useParams()
     let navigate = useNavigate();
+    let product = {
+        name: '',
+        price: 0,
+        stock: 0
+    }
+
     return (<>
         <div className="mx-auto w-75 mt-3">
 
 
             <Formik
                 initialValues={{
-                    ...selectedProduct
+                    ...product
                 }}
                 validationSchema={ProductUpdateSchema}
                 onSubmit={values => {
 
-                    productService.update(values).then(response => {
+                    productService.create(values).then(response => {
                         navigate("/product-func-list")
                     })
                     console.log("submit edildi")
-                    // same shape as initial values
-                    // console.log(values.name);
+
                 }}
             >
                 {({ errors, touched }) => (
@@ -66,23 +70,10 @@ const ProductUpdate = ({ selectedProduct }) => {
                 )}
             </Formik>
 
-
-
-
-
-
-
-
         </div>
 
 
     </>);
-};
+});
 
-const mapStateToProps = (state) => {
-    return {
-        selectedProduct: state.productState.selectedProduct
-    }
-}
-
-export default connect(mapStateToProps, {})(ProductUpdate);
+export default ProductCreate;

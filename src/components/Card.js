@@ -2,10 +2,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import productService from "../services/ProductService";
-import { observer } from "mobx-react";
-import { productStore } from "../stores/ProductStore";
+import { connect } from "react-redux";
+import { setSelectedProduct, removeProduct } from "../slicers/ProductSlicer";
 
-const Card = observer(({ product, setProduct }) => {
+
+const Card = ({ product, setSelectedProduct, removeProduct }) => {
 
     let navigate = useNavigate();
 
@@ -22,13 +23,14 @@ const Card = observer(({ product, setProduct }) => {
 
                 <Link to={`/product-update/${product.id}`} onClick={
                     () => {
-                        productStore.setSelectedProduct(product);
+                        setSelectedProduct(product);
                     }
                 } className="card-link">Update</Link>
                 <button onClick={() => {
                     productService.remove(product.id).then(response => {
-                        setProduct(product.id);
-                        navigate("/product-list");
+                        // setProduct(product.id);
+                        removeProduct(product);
+                        navigate("/product-func-list");
                     });
                 }} className="card-link">Remove</button>
             </div>
@@ -37,7 +39,10 @@ const Card = observer(({ product, setProduct }) => {
 
 
     )
-});
+};
 
+const mapStateToProps = (state) => {
+    return {}
+}
 
-export default Card;
+export default connect(mapStateToProps, { setSelectedProduct, removeProduct })(Card);

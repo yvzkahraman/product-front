@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { observer } from "mobx-react";
-import { productStore } from "./stores/ProductStore";
+// import { observer } from "mobx-react";
+// import { productStore } from "./stores/ProductStore";
 
 import Card from "./components/Card";
+import { connect } from "react-redux";
+import { setProducts } from "./slicers/ProductSlicer";
+import { Link } from "react-router-dom";
 
 //stateles
-const ProductListFunc = observer(() => {
+const ProductListFunc = (props) => {
+
+    console.log("props", props);
     //hook
     // const arr = useState("ONF");
 
@@ -14,7 +19,7 @@ const ProductListFunc = observer(() => {
     // 
 
 
-    const [products, setProducts] = useState([]);
+    // const [products, setProducts] = useState([]);
 
     // useEffect(() => {
     //     console.log("name li use effect çalıştı")
@@ -24,9 +29,15 @@ const ProductListFunc = observer(() => {
     useEffect(() => {
         axios.get("http://localhost:5017/api/Products")
             .then(response => {
-                productStore.setProducts(response.data);
-                setProducts(response.data);
-                console.log("products", products);
+                props.setProducts(response.data);
+                // productStore.setProducts(response.data);
+
+                //thunkAsync metodları araştırın.
+                // props.setProducts(response.data);
+
+
+                // setProducts(response.data);
+                // console.log("products", products);
 
             }).catch(err => {
 
@@ -36,8 +47,16 @@ const ProductListFunc = observer(() => {
     return (
         <>
             <div className="container">
+                <div className="text-end mt-2">
+                    <Link to="/product-create" className="btn btn-primary">Create New Product</Link>
+                </div>
+                {/* {productStore.products && productStore.products.map(product => {
+                    return (
+                        <Card key={product.id} product={product}></Card>
+                    )
+                })} */}
 
-                {products && products.map(product => {
+                {props.products && props.products.map(product => {
                     return (
                         <Card key={product.id} product={product}></Card>
                     )
@@ -46,5 +65,12 @@ const ProductListFunc = observer(() => {
 
         </>
     )
-})
-export default ProductListFunc;
+}
+
+const mapStateToProps = (state) => {
+    return {
+        products: state.productState.products
+    }
+}
+
+export default connect(mapStateToProps, { setProducts })(ProductListFunc);

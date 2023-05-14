@@ -10,6 +10,9 @@ class ProductService {
     remove(id) {
         return axios.delete(`http://localhost:5017/api/Products/${id}`);
     }
+    create(data) {
+        return axios.post("http://localhost:5017/api/Products", data);
+    }
 
 }
 
